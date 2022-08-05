@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">CallTracker</string>
 
-    <string name="api_url">API URL</string>
+    <string name="api_url">API domain (example.com)</string>
 
     <string name="operator_id">Operator ID</string>
     <string name="save">Save</string>
 
-    <string name="enter_valid_url">Enter valid url</string>
+    <string name="enter_valid_url">Enter valid API domain</string>
     <string name="enter_valid_operator_id">Enter valid operator id</string>
     <string name="call_log_permission_required">Please provide permissions in settings</string>
     <string name="cancel">Cancel</string>
@@ -15,5 +15,10 @@
     <string name="missed_permissions">Missing permissions</string>
     <string name="saved_succefully">Saved successfully</string>
     <string name="hide">Hide</string>
+    <string name="enable_accessibility_service">Enable accessibility service</string>
+    <string name="accessibility_service_rationale">For stable execution after rebooting device you can enable accessibility service for this app. It\'s not mandatory</string>
+    <string name="enable">Enable</string>
+    <string name="i_refuse">I refuse</string>
+    <string name="accessibility_service">Accessibility service</string>
 
 </resources>

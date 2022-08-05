@@ -10,11 +10,10 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val prefs: SharedPreferences) : ViewModel() {
 
     fun onSave(apiUrl: String, operatorId: String): Boolean {
-        prefs.edit().apply {
+        return prefs.edit().apply {
             putString(PrefsUtil.API_URL, apiUrl)
             putString(PrefsUtil.OPERATOR_ID, operatorId)
-        }.apply()
-        return true
+        }.commit()
     }
 
     fun getApiUrl(): String {

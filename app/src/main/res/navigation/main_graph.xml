@@ -7,5 +7,13 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="ru.webwarehouse.calltracker.ui.fragments.home.HomeFragment"
-        android:label="HomeFragment" />
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_logFragment"
+            app:destination="@id/logFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/logFragment"
+        android:name="ru.webwarehouse.calltracker.ui.fragments.log.LogFragment"
+        android:label="LogFragment" />
 </navigation>

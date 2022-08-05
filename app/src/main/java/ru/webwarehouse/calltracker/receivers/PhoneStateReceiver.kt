@@ -9,6 +9,7 @@ import android.widget.Toast
 import dagger.hilt.android.AndroidEntryPoint
 import ru.webwarehouse.calltracker.repository.CallsRepository
 import ru.webwarehouse.calltracker.util.PrefsUtil
+import ru.webwarehouse.calltracker.util.logToPrefs
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -25,6 +26,8 @@ class PhoneStateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
 
+        Timber.v("received")
+
         if (intent == null || context == null) return
 
         this.context = context
@@ -32,10 +35,8 @@ class PhoneStateReceiver : BroadcastReceiver() {
         when (intent.action) {
             "android.intent.action.PHONE_STATE" -> {
                 val number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
+
                 if (number.isNullOrEmpty()) {
-                    if (intent.getStringExtra(TelephonyManager.EXTRA_STATE) == TelephonyManager.EXTRA_STATE_RINGING) {
-                        toast("r-ringed-empty")
-                    }
                     return
                 }
 
@@ -51,7 +52,7 @@ class PhoneStateReceiver : BroadcastReceiver() {
                 when (intent.getStringExtra(TelephonyManager.EXTRA_STATE)) {
                     TelephonyManager.EXTRA_STATE_RINGING -> onRinged(number)
                     TelephonyManager.EXTRA_STATE_OFFHOOK -> {
-                        onHookedOff(number)
+                        onHooked(number)
                         //TelephonyManager.EXTRA_
                     }
                     TelephonyManager.EXTRA_STATE_IDLE -> onIdle(number)
@@ -65,23 +66,39 @@ class PhoneStateReceiver : BroadcastReceiver() {
     private fun onRinged(number: String) {
         Timber.i("$number ringed")
         toast("r-ringed: $number")
-        repo.onRinged(number)
+
+        try {
+            repo.onRinged(number)
+        } catch (e: Exception) {
+            logToPrefs(e.toString(), prefs)
+        }
     }
 
-    private fun onHookedOff(number: String) {
+    private fun onHooked(number: String) {
         Timber.i("$number hooked")
         toast("r-hooked: $number")
-        repo.onHooked(number)
+
+        try {
+            repo.onHooked(number)
+        } catch (e: Exception) {
+            logToPrefs(e.toString(), prefs)
+        }
     }
 
     private fun onIdle(number: String) {
         Timber.i("$number idle")
         toast("r-idle: $number")
-        repo.onIdle(number)
+
+        try {
+            repo.onIdle(number)
+        } catch (e: Exception) {
+            logToPrefs(e.toString(), prefs)
+        }
     }
 
     private fun toast(text: String) {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+        logToPrefs(text, prefs)
     }
 
 }

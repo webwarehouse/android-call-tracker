@@ -2,7 +2,7 @@ package ru.webwarehouse.calltracker.network.calls
 
 import com.squareup.moshi.Json
 
-data class ActiveCallPatch(
+data class ActiveCallPost(
 
     @Json(name = "phone")
     val phone: String,

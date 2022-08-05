@@ -9,12 +9,10 @@ import androidx.viewbinding.ViewBinding
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
-abstract class ViewBindingFragment<out VB : ViewBinding> : BaseFragment() {
+abstract class ViewBindingFragment<out VB : ViewBinding> : Fragment() {
 
     private var _binding: VB? = null
     protected val binding get() = _binding!!
-
-    final override val root get() = binding.root
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = createViewBindingInstance(this, inflater, container)

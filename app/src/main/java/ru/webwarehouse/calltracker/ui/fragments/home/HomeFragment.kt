@@ -1,7 +1,6 @@
 package ru.webwarehouse.calltracker.ui.fragments.home
 
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -10,6 +9,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.webwarehouse.calltracker.R
 import ru.webwarehouse.calltracker.databinding.FragmentHomeBinding
 import ru.webwarehouse.calltracker.extensions.clearError
+import ru.webwarehouse.calltracker.extensions.clearFocus
+import ru.webwarehouse.calltracker.extensions.hideKeyboard
+import ru.webwarehouse.calltracker.extensions.toEditable
 import ru.webwarehouse.calltracker.ui.fragments.ViewBindingFragment
 import ru.webwarehouse.calltracker.util.Validator
 
@@ -21,16 +23,23 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.root.setOnClickListener {
+            clearFocus()
+            hideKeyboard()
+        }
+
         binding.btnSave.setOnClickListener {
+            clearFocus()
+            hideKeyboard()
             onSave()
         }
 
-        binding.urlInputEditText.text = SpannableStringBuilder(viewModel.getApiUrl())
+        binding.urlInputEditText.text = viewModel.getApiUrl().toEditable()
         binding.urlInputEditText.addTextChangedListener {
             binding.urlInputLayout.clearError()
         }
 
-        binding.idInputEditText.text = SpannableStringBuilder(viewModel.getOperatorCode())
+        binding.idInputEditText.text = viewModel.getOperatorCode().toEditable()
         binding.idInputEditText.addTextChangedListener {
             binding.idInputLayout.clearError()
         }

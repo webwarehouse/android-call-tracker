@@ -7,8 +7,7 @@ object Validator {
     @JvmStatic
     fun isValidUrl(s: String?): Boolean {
         if (s.isNullOrBlank()) return false
-        if (!Patterns.WEB_URL.matcher(s).matches()) return false
-        if ("http://" !in s && "https://" !in s) return false
+        if (!Patterns.DOMAIN_NAME.matcher(s).matches()) return false
         return true
     }
 
