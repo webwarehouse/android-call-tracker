@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 
 @SuppressLint("ApplySharedPref")
 fun logToPrefs(message: String, prefs: SharedPreferences) {
-    val time = System.currentTimeMillis().toString()
-    prefs.edit().putString("b/$time", message).commit()
+    System.currentTimeMillis().toString().let { time ->
+        prefs.edit().putString("b/$time", message).commit()
+    }
 }

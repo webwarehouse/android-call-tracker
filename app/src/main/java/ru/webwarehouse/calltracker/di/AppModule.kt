@@ -2,7 +2,6 @@ package ru.webwarehouse.calltracker.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.telecom.Call
 import androidx.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
@@ -22,5 +21,8 @@ object AppModule {
     @Provides
     fun provideRepository(@ApplicationContext context: Context): CallsRepository =
         CallsRepository(provideSharedPrefs(context))
+
+    /*@Provides
+    fun provideUserInfo(@ApplicationContext context: Context): UserInfo = UserInfo(context)*/
 
 }

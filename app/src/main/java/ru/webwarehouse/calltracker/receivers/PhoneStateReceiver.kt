@@ -51,10 +51,7 @@ class PhoneStateReceiver : BroadcastReceiver() {
 
                 when (intent.getStringExtra(TelephonyManager.EXTRA_STATE)) {
                     TelephonyManager.EXTRA_STATE_RINGING -> onRinged(number)
-                    TelephonyManager.EXTRA_STATE_OFFHOOK -> {
-                        onHooked(number)
-                        //TelephonyManager.EXTRA_
-                    }
+                    TelephonyManager.EXTRA_STATE_OFFHOOK -> onHooked(number)
                     TelephonyManager.EXTRA_STATE_IDLE -> onIdle(number)
                 }
             } else -> {

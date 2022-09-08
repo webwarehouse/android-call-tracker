@@ -15,4 +15,3 @@ fun retrofitInstance(baseUrl: String): Retrofit {
 val moshi: Moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
-

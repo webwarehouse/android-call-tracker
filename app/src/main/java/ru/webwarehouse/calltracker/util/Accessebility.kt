@@ -4,7 +4,7 @@ import android.content.Context
 import android.provider.Settings
 import android.text.TextUtils.SimpleStringSplitter
 import androidx.preference.PreferenceManager
-import ru.webwarehouse.calltracker.MyAccessibilityService
+import ru.webwarehouse.calltracker.service.MyAccessibilityService
 import timber.log.Timber
 
 private const val ACCESSIBILITY_ENABLED = 1

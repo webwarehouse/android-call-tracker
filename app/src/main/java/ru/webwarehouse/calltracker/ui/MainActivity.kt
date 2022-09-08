@@ -5,10 +5,13 @@ import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
@@ -16,7 +19,6 @@ import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import ru.webwarehouse.calltracker.R
-import ru.webwarehouse.calltracker.ui.fragments.log.LogFragment
 import ru.webwarehouse.calltracker.util.isAccessibilitySettingsOn
 import timber.log.Timber
 
@@ -35,7 +37,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             .setMessage(R.string.accessibility_service_rationale)
             .setPositiveButton(R.string.enable) { _, _  ->
                 val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                startActivityForResult(intent, 0)
+                startActivity(intent)
             }
             .setNegativeButton(R.string.i_refuse, null)
             .show()
@@ -43,32 +45,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         viewModel.onAccessibilityRequested()
     }
 
-    /* private fun requestRole() {
-        val roleManager = getSystemService(ROLE_SERVICE) as RoleManager
-        val intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_CALL_SCREENING)
-        startActivityForResult(intent, REQUEST_ID)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_ID) {
-            if (resultCode == android.app.Activity.RESULT_OK) {
-                // Your app is now the call screening app
-            } else {
-                // Your app is not the call screening app
-            }
-        }
-    }*/
-
-    /*companion object {
-        private const val REQUEST_ID = 1
-    }*/
-
     private var dialog: Dialog? = null
 
     override fun onStart() {
         super.onStart()
-        checkForPermissions()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkForPermissions()
+        }
 
         if (!viewModel.isAccessibilityAlreadyRequested() && !isAccessibilitySettingsOn(this)) {
             askForLaunchService()
@@ -83,6 +67,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         super.onStop()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun checkForPermissions() {
         Timber.d("checkForPermissions called")
 
@@ -172,7 +157,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.item_service -> showGoToSettingsToGrantPermissionDialog()
+            R.id.item_service -> {
+                if (!isAccessibilitySettingsOn(this)) {
+                    askForLaunchService()
+                } else {
+                    Toast.makeText(this, "Accessibility already enabled", Toast.LENGTH_SHORT).show()
+                }
+            }
             R.id.item_logs -> onGoToLogsSelected()
             else -> return false
         }

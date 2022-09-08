@@ -1,11 +1,9 @@
 package ru.webwarehouse.calltracker.network.calls
 
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import retrofit2.http.*
 import ru.webwarehouse.calltracker.network.retrofitInstance
+import ru.webwarehouse.calltracker.util.UserAgent
 
 interface CallsApiService {
 
@@ -15,7 +13,10 @@ interface CallsApiService {
         @Body
         body: ActiveCallPost,
 
-    ): Call<ActiveCallResponse>
+        @Header("User-Agent")
+        userAgent: String = UserAgent.instance.userAgent,
+
+        ): Call<ActiveCallResponse>
 
     @PUT(value = "api/calls/{id}")
     fun postEndedCall(
@@ -26,7 +27,10 @@ interface CallsApiService {
         @Body
         body: EndedCallPut,
 
-        ): Call<Any>
+        @Header("User-Agent")
+        userAgent: String = UserAgent.instance.userAgent,
+
+    ): Call<Any>
 
 }
 

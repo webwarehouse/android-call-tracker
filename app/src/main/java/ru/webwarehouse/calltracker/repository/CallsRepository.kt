@@ -14,7 +14,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @SuppressLint("ApplySharedPref")
-class CallsRepository @Inject constructor(private val prefs: SharedPreferences) {
+class CallsRepository @Inject constructor(
+    private val prefs: SharedPreferences,
+) {
 
     private val retrofitService: CallsApiService by lazy {
         val apiUrl = "https://${prefs.getString(PrefsUtil.API_URL, null)!!}/"
@@ -33,13 +35,14 @@ class CallsRepository @Inject constructor(private val prefs: SharedPreferences) 
                 type = "incoming",
                 operator = operatorCode,
             )
+
             val task = retrofitService.postActiveCall(body)
             task.enqueue(object : Callback<ActiveCallResponse> {
+
                 override fun onResponse(call: Call<ActiveCallResponse>, response: Response<ActiveCallResponse>) {
                     Timber.i("onResponse called; body = ${response.body()}")
                     val id = response.body()!!.id
                     prefs.edit().putString("n/$number", "incoming|$id").commit()
-                    Timber.e(prefs.getString("n/+79911313028", null))
                 }
 
                 override fun onFailure(call: Call<ActiveCallResponse>, t: Throwable) {
@@ -66,22 +69,20 @@ class CallsRepository @Inject constructor(private val prefs: SharedPreferences) 
 
             val task = retrofitService.postActiveCall(body)
             Timber.e(task.request().url().toString())
+
             task.enqueue(object : Callback<ActiveCallResponse> {
                 override fun onResponse(call: Call<ActiveCallResponse>, response: Response<ActiveCallResponse>) {
                     Timber.i("onResponse called; body = ${response.body()}")
                     val id = response.body()!!.id
                     prefs.edit().putString("n/$number", "outgoing|$id|$startedAt").commit()
-                    Timber.e(prefs.getString("n/+79911313028", null))
                 }
 
                 override fun onFailure(call: Call<ActiveCallResponse>, t: Throwable) {
                     Timber.e("onFailure; error = $t")
                 }
-
             })
         }
     }
-
 
     fun onIdle(number: String) {
         val data = prefs.getString("n/$number", null)?.split("|") ?: return
@@ -95,7 +96,12 @@ class CallsRepository @Inject constructor(private val prefs: SharedPreferences) 
         val timeInMillis = System.currentTimeMillis() - data.elementAt(2).toLong()
         val timeInSeconds = timeInMillis / 1000
 
-        val task = retrofitService.postEndedCall(id, EndedCallPut(duration = timeInSeconds.toInt()))
+        val task =
+            retrofitService.postEndedCall(
+                id,
+                EndedCallPut(duration = timeInSeconds.toInt()),
+            )
+
         task.enqueue(object : Callback<Any> {
             override fun onResponse(call: Call<Any>, response: Response<Any>) {
 

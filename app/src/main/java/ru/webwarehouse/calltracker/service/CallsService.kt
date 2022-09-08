@@ -8,7 +8,7 @@ import timber.log.Timber
 
     override fun onScreenCall(callDetails: Call.Details) {
         Timber.e("onScreenCall called; ${callDetails.handle}")
-        respondToCall(callDetails, CallResponse.Builder().build())
+        //respondToCall(callDetails, CallResponse.Builder().build())
     }
 
 }
