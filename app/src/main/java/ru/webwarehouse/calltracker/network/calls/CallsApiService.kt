@@ -16,7 +16,7 @@ interface CallsApiService {
         @Header("User-Agent")
         userAgent: String = UserAgent.instance.userAgent,
 
-        ): Call<ActiveCallResponse>
+    ): Call<ActiveCallResponse>
 
     @PUT(value = "api/calls/{id}")
     fun postEndedCall(

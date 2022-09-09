@@ -19,5 +19,31 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep class ru.webwarehouse.calltracker.network.*
--keep class ru.webwarehouse.calltracker.repository.*
+
+-keep class ru.** {
+    *;
+}
+
+#-keep class ru.webwarehouse.calltracker.repository.* {
+#    *;
+#}
+
+#-keep class retrofit2.* {
+#    *;
+#}
+
+#-keep class okhttp3.* {
+#    *;
+#}
+
+#-keep class okio.* {
+#    *;
+#}
+
+#-keep class com.squareup.moshi* {
+#    *;
+#}
+
+#-keep class ru.webwarehouse.calltracker.* {
+#    *;
+#}

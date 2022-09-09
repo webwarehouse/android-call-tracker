@@ -1,10 +1,11 @@
 package ru.webwarehouse.calltracker.network.calls
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 
 data class ActiveCallResponse(
 
-    @Json(name = "id")
+    //@Json(name = "id")
+    @SerializedName("id")
     val id: String,
 
 )

@@ -92,9 +92,22 @@ class CallsRepository @Inject constructor(
         }
         editor.commit()
 
+        val timeInSeconds: Long
+
+        // Most likely rejected incoming call
+        if (data.size != 3) {
+            if (data.elementAt(0) == "incoming") {
+                timeInSeconds = 0L
+            } else {
+                // If this code called then something wrong happens
+                timeInSeconds = 0L
+            }
+        } else {
+            val timeInMillis = System.currentTimeMillis() - data.elementAt(2).toLong()
+            timeInSeconds = timeInMillis / 1000
+        }
+
         val id = data.elementAt(1)
-        val timeInMillis = System.currentTimeMillis() - data.elementAt(2).toLong()
-        val timeInSeconds = timeInMillis / 1000
 
         val task =
             retrofitService.postEndedCall(
