@@ -6,10 +6,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +19,7 @@ import androidx.navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import ru.webwarehouse.calltracker.R
-import ru.webwarehouse.calltracker.util.isAccessibilitySettingsOn
+import ru.webwarehouse.calltracker.service.TrackerService
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -29,33 +29,25 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         findNavController(R.id.fragmentContainer)
     }
 
-    private val viewModel by viewModels<MainViewModel>()
-
-    private fun askForLaunchService() {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.enable_accessibility_service)
-            .setMessage(R.string.accessibility_service_rationale)
-            .setPositiveButton(R.string.enable) { _, _  ->
-                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                startActivity(intent)
-            }
-            .setNegativeButton(R.string.i_refuse, null)
-            .show()
-
-        viewModel.onAccessibilityRequested()
-    }
-
     private var dialog: Dialog? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (!TrackerService.isActive()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(Intent(this, TrackerService::class.java))
+            } else {
+                startService(Intent(this, TrackerService::class.java))
+            }
+        }
+    }
 
     override fun onStart() {
         super.onStart()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkForPermissions()
-        }
-
-        if (!viewModel.isAccessibilityAlreadyRequested() && !isAccessibilitySettingsOn(this)) {
-            askForLaunchService()
         }
     }
 
@@ -157,13 +149,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.item_service -> {
+            /*R.id.item_service -> {
                 if (!isAccessibilitySettingsOn(this)) {
                     askForLaunchService()
                 } else {
                     Toast.makeText(this, "Accessibility already enabled", Toast.LENGTH_SHORT).show()
                 }
-            }
+            }*/
             R.id.item_logs -> onGoToLogsSelected()
             else -> return false
         }
