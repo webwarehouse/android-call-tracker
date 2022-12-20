@@ -13,6 +13,9 @@ interface CallsApiService {
         @Body
         body: ActiveCallPost,
 
+        @Header("Authorization")
+        token: String,
+
         @Header("User-Agent")
         userAgent: String = UserAgent.instance.userAgent,
 
@@ -26,6 +29,9 @@ interface CallsApiService {
 
         @Body
         body: EndedCallPut,
+
+        @Header("Authorization")
+        token: String,
 
         @Header("User-Agent")
         userAgent: String = UserAgent.instance.userAgent,

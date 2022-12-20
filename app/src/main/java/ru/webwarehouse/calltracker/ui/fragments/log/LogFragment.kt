@@ -17,6 +17,8 @@ class LogFragment : Fragment() {
     private var _binding: FragmentLogBinding? = null
     private val binding: FragmentLogBinding get() = _binding!!
 
+    private val viewModel by viewModels<LogViewModel>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,9 +32,6 @@ class LogFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
-    private val viewModel by viewModels<LogViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

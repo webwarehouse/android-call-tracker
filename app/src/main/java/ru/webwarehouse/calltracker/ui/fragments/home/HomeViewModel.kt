@@ -1,27 +1,17 @@
 package ru.webwarehouse.calltracker.ui.fragments.home
 
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ru.webwarehouse.calltracker.util.PrefsUtil
+import ru.webwarehouse.calltracker.R
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val prefs: SharedPreferences) : ViewModel() {
 
-    fun onSave(apiUrl: String, operatorId: String): Boolean {
-        return prefs.edit().apply {
-            putString(PrefsUtil.API_URL, apiUrl)
-            putString(PrefsUtil.OPERATOR_ID, operatorId)
-        }.commit()
-    }
-
-    fun getApiUrl(): String {
-        return prefs.getString(PrefsUtil.API_URL, null) ?: ""
-    }
-
-    fun getOperatorCode(): String {
-        return prefs.getString(PrefsUtil.OPERATOR_ID, null) ?: ""
+    fun getOperatorCode(context: Context): String {
+        return prefs.getString(context.getString(R.string.key_operator_id), null) ?: ""
     }
 
 }

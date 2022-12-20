@@ -7,15 +7,19 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import ru.webwarehouse.calltracker.R
@@ -25,22 +29,19 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
-    private val navController: NavController by lazy {
-        findNavController(R.id.fragmentContainer)
-    }
+    private lateinit var navController: NavController
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private var dialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (!TrackerService.isActive()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(Intent(this, TrackerService::class.java))
-            } else {
-                startService(Intent(this, TrackerService::class.java))
-            }
-        }
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
+        navController = navHostFragment.navController
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
     override fun onStart() {
@@ -48,6 +49,23 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkForPermissions()
+        } else {
+            launchForegroundServiceIfNotYet()
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return (Navigation.findNavController(this, R.id.fragmentContainer).navigateUp()
+                || super.onSupportNavigateUp())
+    }
+
+    private fun launchForegroundServiceIfNotYet() {
+        if (!TrackerService.isActive()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(Intent(this, TrackerService::class.java))
+            } else {
+                startService(Intent(this, TrackerService::class.java))
+            }
         }
     }
 
@@ -97,6 +115,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     requestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE), 2)
                 }
             }
+
+            else -> {
+                launchForegroundServiceIfNotYet()
+            }
         }
     }
 
@@ -106,9 +128,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isEmpty()) return
 
         if (PackageManager.PERMISSION_DENIED in grantResults) {
             showGoToSettingsToGrantPermissionDialog()
+        } else {
+            launchForegroundServiceIfNotYet()
         }
     }
 
@@ -149,17 +174,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            /*R.id.item_service -> {
-                if (!isAccessibilitySettingsOn(this)) {
-                    askForLaunchService()
-                } else {
-                    Toast.makeText(this, "Accessibility already enabled", Toast.LENGTH_SHORT).show()
-                }
-            }*/
+            R.id.item_settings -> onGoToSettingsSelected()
             R.id.item_logs -> onGoToLogsSelected()
             else -> return false
         }
         return true
+    }
+
+    private fun onGoToSettingsSelected() {
+        if (navController.currentDestination?.id != R.id.settingsFragment) {
+            navController.navigate(R.id.settingsFragment)
+        }
     }
 
     private fun onGoToLogsSelected() {

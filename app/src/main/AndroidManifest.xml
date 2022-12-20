@@ -3,10 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="ru.webwarehouse.calltracker">
 
-    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE"
-        tools:ignore="ProtectedPermissions" />
-    <!--uses-permission android:name="android.permission.BIND_SCREENING_SERVICE"
-        tools:ignore="ProtectedPermissions" /-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
@@ -20,17 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CallTracker"
-        tools:targetApi="31"
+        tools:targetApi="33"
         tools:ignore="DataExtractionRules">
-
-
-
-        <!--service android:name="ru.webwarehouse.calltracker.service.CallsService" android:permission="android.permission.BIND_SCREENING_SERVICE"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.telecom.CallScreeningService"/>
-            </intent-filter>
-        </service-->
 
         <receiver android:name=".receivers.PhoneStateReceiver"
             android:priority="500"
@@ -44,6 +31,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,24 +39,13 @@
             </intent-filter>
         </activity>
 
-        <!--service
-            android:name=".service.MyAccessibilityService"
-            android:label="@string/app_name"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService"/>
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_config"/>
-        </service-->
-
         <service
             android:name=".service.TrackerService"
             android:enabled="true"
             android:exported="false"/>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
     </application>
 

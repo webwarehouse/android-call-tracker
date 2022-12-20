@@ -20,7 +20,7 @@ object AppModule {
 
     @Provides
     fun provideRepository(@ApplicationContext context: Context): CallsRepository =
-        CallsRepository(provideSharedPrefs(context))
+        CallsRepository(provideSharedPrefs(context), context)
 
     /*@Provides
     fun provideUserInfo(@ApplicationContext context: Context): UserInfo = UserInfo(context)*/

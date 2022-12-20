@@ -7,8 +7,9 @@ import android.content.SharedPreferences
 import android.telephony.TelephonyManager
 import android.widget.Toast
 import dagger.hilt.android.AndroidEntryPoint
+import ru.webwarehouse.calltracker.R
 import ru.webwarehouse.calltracker.repository.CallsRepository
-import ru.webwarehouse.calltracker.util.PrefsUtil
+import ru.webwarehouse.calltracker.service.TrackerService
 import ru.webwarehouse.calltracker.util.logToPrefs
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,6 +31,8 @@ class PhoneStateReceiver : BroadcastReceiver() {
 
         if (intent == null || context == null) return
 
+        if (!TrackerService.isActive()) return
+
         this.context = context
 
         when (intent.action) {
@@ -41,8 +44,8 @@ class PhoneStateReceiver : BroadcastReceiver() {
                 }
 
                 val needToProcess =
-                    !prefs.getString(PrefsUtil.API_URL, null).isNullOrEmpty() &&
-                    !prefs.getString(PrefsUtil.OPERATOR_ID, null).isNullOrEmpty()
+                    !prefs.getString(context.getString(R.string.key_api_url), null).isNullOrEmpty() &&
+                    !prefs.getString(context.getString(R.string.key_operator_id), null).isNullOrEmpty()
 
                 if (!needToProcess) {
                     toast("r-need")

@@ -1,6 +1,7 @@
 package ru.webwarehouse.calltracker.repository
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -8,27 +9,29 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ru.webwarehouse.calltracker.R
 import ru.webwarehouse.calltracker.network.calls.*
-import ru.webwarehouse.calltracker.util.PrefsUtil
 import timber.log.Timber
 import javax.inject.Inject
 
 @SuppressLint("ApplySharedPref")
 class CallsRepository @Inject constructor(
     private val prefs: SharedPreferences,
+    private val context: Context,
 ) {
 
     private val retrofitService: CallsApiService by lazy {
-        val apiUrl = "https://${prefs.getString(PrefsUtil.API_URL, null)!!}/"
+        val apiUrl = "https://${prefs.getString(context.getString(R.string.key_api_url), null)!!}/"
         CallsApi(apiUrl).retrofitService
     }
 
     private val operatorCode: String by lazy {
-        return@lazy prefs.getString(PrefsUtil.OPERATOR_ID, null)!!
+        return@lazy prefs.getString(context.getString(R.string.key_operator_id), null)!!
     }
 
     fun onRinged(number: String) {
         prefs.edit().putString("n/$number", "incoming").commit()
+        val token = "Bearer ${prefs.getString(context.getString(R.string.key_token), null) ?: ""}"
         CoroutineScope(Dispatchers.IO).launch {
             val body = ActiveCallPost(
                 phone = number,
@@ -36,7 +39,7 @@ class CallsRepository @Inject constructor(
                 operator = operatorCode,
             )
 
-            val task = retrofitService.postActiveCall(body)
+            val task = retrofitService.postActiveCall(body, token)
             task.enqueue(object : Callback<ActiveCallResponse> {
 
                 override fun onResponse(call: Call<ActiveCallResponse>, response: Response<ActiveCallResponse>) {
@@ -54,6 +57,7 @@ class CallsRepository @Inject constructor(
     }
 
     fun onHooked(number: String) {
+        val token = "Bearer ${prefs.getString(context.getString(R.string.key_token), null) ?: ""}"
         if ("n/$number" in prefs.all.keys) {
             // Incoming call
             val id = prefs.getString("n/$number", null)!!.split("|").elementAt(1)
@@ -67,7 +71,7 @@ class CallsRepository @Inject constructor(
                 operator = operatorCode,
             )
 
-            val task = retrofitService.postActiveCall(body)
+            val task = retrofitService.postActiveCall(body, token)
             Timber.e(task.request().url().toString())
 
             task.enqueue(object : Callback<ActiveCallResponse> {
@@ -86,6 +90,7 @@ class CallsRepository @Inject constructor(
 
     fun onIdle(number: String) {
         val data = prefs.getString("n/$number", null)?.split("|") ?: return
+        val token = "Bearer ${prefs.getString(context.getString(R.string.key_token), null) ?: ""}"
         val editor = prefs.edit()
         prefs.all.keys.filter { "n/" in it }.forEach {
             editor.remove(it).commit()
@@ -113,6 +118,7 @@ class CallsRepository @Inject constructor(
             retrofitService.postEndedCall(
                 id,
                 EndedCallPut(duration = timeInSeconds.toInt()),
+                token,
             )
 
         task.enqueue(object : Callback<Any> {

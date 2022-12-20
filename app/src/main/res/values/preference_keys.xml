@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="key_api_url">apiUrl</string>
+    <string name="key_operator_id">operatorId</string>
+    <string name="key_token">token</string>
+    <string name="key_service_started_at">serviceStartedAt</string>
+</resources>

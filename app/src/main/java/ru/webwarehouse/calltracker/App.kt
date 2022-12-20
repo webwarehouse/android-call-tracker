@@ -16,8 +16,6 @@ class App : Application() {
             Timber.plant(Timber.DebugTree())
         }
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
         UserAgent.createInstance(this)
     }
 

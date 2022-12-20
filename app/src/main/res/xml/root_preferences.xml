@@ -1,0 +1,31 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <PreferenceCategory app:title="@string/settings">
+
+        <EditTextPreference
+            app:key="@string/key_api_url"
+            app:title="@string/api_url"
+            app:positiveButtonText="@string/save"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="@string/key_operator_id"
+            app:title="@string/operator_id"
+            app:positiveButtonText="@string/save"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="@string/key_token"
+            app:title="@string/token"
+            app:positiveButtonText="@string/save"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:key="@string/key_service_started_at"
+            app:selectable="false"
+            tools:summary="current version" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

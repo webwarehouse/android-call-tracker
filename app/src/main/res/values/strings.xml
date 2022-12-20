@@ -13,12 +13,9 @@
     <string name="settings">Settings</string>
     <string name="exit">Exit</string>
     <string name="missed_permissions">Missing permissions</string>
-    <string name="saved_succefully">Saved successfully</string>
+    <string name="saved_successfully">Saved successfully</string>
     <string name="hide">Hide</string>
-    <string name="enable_accessibility_service">Enable accessibility service</string>
-    <string name="accessibility_service_rationale">For stable execution after rebooting device you can enable accessibility service for this app. It\'s not mandatory</string>
-    <string name="enable">Enable</string>
-    <string name="i_refuse">I refuse</string>
-    <string name="accessibility_service">Accessibility service</string>
+    <string name="token">Token</string>
+    <string name="service_info">Service started at %1$s</string>
 
 </resources>

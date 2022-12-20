@@ -6,16 +6,24 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import ru.webwarehouse.calltracker.R
 
 class TrackerService : Service() {
 
+    lateinit var prefs: SharedPreferences
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return START_STICKY
     }
 
     override fun onCreate() {
@@ -28,6 +36,14 @@ class TrackerService : Service() {
         )
 
         _instance = this
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        recordStartTimeToPrefs()
+    }
+
+    private fun recordStartTimeToPrefs() {
+        val now = System.currentTimeMillis()
+        prefs.edit().putLong(getString(R.string.key_service_started_at), now).apply()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
